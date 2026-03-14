@@ -1,0 +1,21 @@
+--- Register User ---
+[201] /api/register => {"user":{"id":2,"name":"Regular User","email":"user@rajawisata.com","role":"user","created_at":"2026-03-11T23:27:32.000000Z"},"access_token":"1|9E3YVbpraWHeQdFcDFe0TCeDjtarRGu6jbDMEG2T92092854","token_type":"Bearer"}
+
+--- Login Admin ---
+[200] /api/login => {"user":{"id":1,"name":"Administrator","email":"admin@rajawisata.com","role":"administrator","created_at":"2026-03-11T23:26:39.000000Z"},"access_token":"2|08zxlZS45LOv9T2Hytqgfihh6awMVEVmILpkDP6wfd71c994","token_type":"Bearer"}
+
+--- Test Admin Endpoint (with Admin Token) ---
+[200] /api/admin-only => {"message":"Welcome, Administrator!"}
+
+--- Test Admin Endpoint (with User Token) ---
+[403] /api/admin-only => {"message":"Forbidden. You do not have the required role to access this resource."}
+
+--- Test User Endpoint (with Admin Token) ---
+[403] /api/user-only => {"message":"Forbidden. You do not have the required role to access this resource."}
+
+--- Test User Endpoint (with User Token) ---
+[200] /api/user-only => {"message":"Welcome, User!"}
+
+--- Logout ---
+[200] /api/logout => {"message":"Logged out successfully"}
+[200] /api/logout => {"message":"Logged out successfully"}

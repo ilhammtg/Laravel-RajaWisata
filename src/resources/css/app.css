@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.vue';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-pala-light: #f0fdf4;
+    --color-pala: #059669;
+    --color-pala-dark: #064e3b;
+
+    --color-ocean-light: #e0f2fe;
+    --color-ocean: #0369a1;
+    --color-ocean-dark: #0c4a6e;
+
+    --color-spice-gold: #fbbf24;
+    --color-spice-sand: #f8fafc;
+
+    --background-image-hero-aceh: linear-gradient(to bottom right, #059669, #0369a1);
+}
