@@ -42,8 +42,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy optimized PHP-FPM pool configuration (zz- prefix = loads last, overrides defaults)
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/zz-performance.conf
 
+# Copy entrypoint script
+COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Set working directory
 WORKDIR /var/www/html
 
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
 EXPOSE 9000

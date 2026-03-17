@@ -80,11 +80,15 @@ Pastikan server produksi memiliki PHP 8.2, Nginx, MySQL, dan Redis yang terinsta
 ### 2. Langkah-langkah Deployment
 
 1.  **Copy file ke server** dan masuk ke direktori root proyek.
-2.  **Instal Dependencies**:
+2.  **Instal Dependencies (Automatis)**:
+    Saat menjalankan `docker-compose up -d --build`, sistem akan secara otomatis menjalankan `composer install` di dalam kontainer.
+    Namun, jika Anda melakukan deployment manual (tanpa Docker):
     ```bash
+    cd src
     composer install --optimize-autoloader --no-dev
     npm install
     npm run build
+    cd ..
     ```
 3.  **Konfigurasi `.env`**:
     Pastikan variabel berikut disesuaikan:
@@ -146,7 +150,34 @@ server {
 }
 ```
 
-### 4. Background Jobs (Queue Worker)
+### 4. Deployment dengan Docker (Produksi)
+
+Jika Anda menggunakan Docker Compose di server produksi:
+
+1.  **Setup Environment**:
+    ```bash
+    cp src/.env.example src/.env
+    # Edit src/.env dengan kredensial produksi
+    ```
+2.  **Jalankan Container**:
+    ```bash
+    docker-compose up -d --build
+    ```
+3.  **Instal Dependensi**:
+    Dependensi PHP (`composer install`) akan otomatis dijalankan saat kontainer *startup*.
+    Untuk frontend, jalankan:
+    ```bash
+    docker exec -it raja_wisata_vite npm install
+    docker exec -it raja_wisata_vite npm run build
+    ```
+4.  **Optimasi & Migrasi**:
+    ```bash
+    docker exec -it raja_wisata_app php artisan migrate --force
+    docker exec -it raja_wisata_app php artisan config:cache
+    docker exec -it raja_wisata_app php artisan route:cache
+    ```
+
+### 5. Background Jobs (Queue Worker)
 
 Gunakan **Supervisor** untuk menjaga Laravel worker tetap berjalan di latar belakang.
 
@@ -174,3 +205,4 @@ stopwaitsecs=3600
 - **Permission Denied**: Pastikan folder `storage` dan `bootstrap/cache` dapat ditulis oleh web server (`chmod -R 775` & `chown -R www-data`).
 - **Internal Server Error**: Periksa login di `storage/logs/laravel.log`.
 - **Mix/Vite Manifest missing**: Pastikan `npm run build` telah dijalankan dengan benar.
+- **Missing vendor/autoload.php**: Muncul saat `composer install` belum dijalankan atau dijalankan di folder yang salah. Pastikan Anda berada di direktori `src` sebelum menjalankan `composer install`.
