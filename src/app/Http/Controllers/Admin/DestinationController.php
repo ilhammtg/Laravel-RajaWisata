@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Destination;
+use App\Models\Hotel;
+use App\Models\Culinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +22,10 @@ class DestinationController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Destinations/Form');
+        return Inertia::render('Admin/Destinations/Form', [
+            'hotels' => Hotel::where('is_active', true)->orderBy('name')->get(['id', 'name']),
+            'culinaries' => Culinary::where('is_active', true)->orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function store(Request $request)
@@ -55,8 +60,13 @@ class DestinationController extends Controller
             }
         }
         $validated['gallery'] = $gallery;
+        $hotelIds = $request->input('hotel_ids', []);
+        $culinaryIds = $request->input('culinary_ids', []);
 
-        Destination::create($validated);
+        $destination = Destination::create($validated);
+        $destination->hotels()->sync($hotelIds);
+        $destination->culinaries()->sync($culinaryIds);
+
         Cache::forget('landing_page_data');
 
         return redirect()->route('admin.destinations.index')->with('success', 'Destinasi berhasil ditambahkan.');
@@ -65,7 +75,9 @@ class DestinationController extends Controller
     public function edit(Destination $destination)
     {
         return Inertia::render('Admin/Destinations/Form', [
-            'destination' => $destination
+            'destination' => $destination->load(['hotels:id', 'culinaries:id']),
+            'hotels' => Hotel::where('is_active', true)->orderBy('name')->get(['id', 'name']),
+            'culinaries' => Culinary::where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -107,8 +119,13 @@ class DestinationController extends Controller
             }
         }
         $validated['gallery'] = $gallery;
+        $hotelIds = $request->input('hotel_ids', []);
+        $culinaryIds = $request->input('culinary_ids', []);
 
         $destination->update($validated);
+        $destination->hotels()->sync($hotelIds);
+        $destination->culinaries()->sync($culinaryIds);
+
         Cache::forget('landing_page_data');
 
         return redirect()->route('admin.destinations.index')->with('success', 'Destinasi berhasil diperbarui.');

@@ -40,4 +40,14 @@ class Destination extends Model
     {
         return $this->morphMany(Review::class, 'reviewable');
     }
+
+    public function hotels(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Hotel::class, 'destination_hotel')->withTimestamps();
+    }
+
+    public function culinaries(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Culinary::class, 'destination_culinary')->withTimestamps();
+    }
 }

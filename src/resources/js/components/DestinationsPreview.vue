@@ -154,6 +154,51 @@
                   </div>
                 </div>
 
+                <!-- Nearby Accommodations -->
+                <div v-if="selectedDest.hotels?.length > 0" class="space-y-6 pt-10 border-t border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-[10px] font-black text-gray-900 uppercase tracking-[0.25em]">Penginapan Terdekat</h4>
+                        <span class="text-[10px] font-bold text-pala uppercase tracking-widest">{{ selectedDest.hotels.length }} Pilihan</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button v-for="hotel in selectedDest.hotels" :key="hotel.id" @click="openNearby('hotel', hotel)" class="group/item flex items-center gap-4 p-3 bg-white rounded-2xl border border-gray-100 hover:shadow-lg hover:border-pala/20 transition-all text-left w-full">
+                            <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                                <img :src="hotel.image_url" :alt="hotel.name" class="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500">
+                            </div>
+                            <div class="min-w-0">
+                                <h5 class="text-sm font-bold text-gray-900 truncate">{{ hotel.name }}</h5>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] text-spice-gold font-bold">★ {{ hotel.rating || '0.0' }}</span>
+                                    <span class="text-[10px] text-gray-400 font-medium truncate">📍 {{ hotel.location }}</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Nearby Culinary -->
+                <div v-if="selectedDest.culinaries?.length > 0" class="space-y-6 pt-10 border-t border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-[10px] font-black text-gray-900 uppercase tracking-[0.25em]">Kuliner Terdekat</h4>
+                        <span class="text-[10px] font-bold text-orange-500 uppercase tracking-widest">{{ selectedDest.culinaries.length }} Lokasi</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button v-for="culinary in selectedDest.culinaries" :key="culinary.id" @click="openNearby('culinary', culinary)" class="group/item flex items-center gap-4 p-3 bg-white rounded-2xl border border-gray-100 hover:shadow-lg hover:border-orange-200 transition-all text-left w-full">
+                            <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                                <img :src="culinary.image_url" :alt="culinary.name" class="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500">
+                            </div>
+                            <div class="min-w-0">
+                                <h5 class="text-sm font-bold text-gray-900 truncate">{{ culinary.name }}</h5>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] text-orange-500 font-bold">{{ culinary.category }}</span>
+                                    <span class="text-gray-300">•</span>
+                                    <span class="text-[10px] text-gray-400 font-medium truncate">📍 {{ culinary.location }}</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Reviews Section -->
                 <div class="space-y-8 pt-10 border-t border-gray-100 pb-20">
                    <div class="flex items-center justify-between">
@@ -279,6 +324,16 @@ const reviewForm = useForm({
     rating: 5,
     comment: ''
 });
+
+const openNearby = (type, item) => {
+    closeModal();
+    const eventName = type === 'hotel' ? 'open-hotel-detail' : 'open-culinary-detail';
+    window.dispatchEvent(new CustomEvent(eventName, { detail: item }));
+    
+    // Scroll smoothly to section
+    const sectionId = type === 'hotel' ? 'hotel' : 'kuliner';
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+};
 
 const isFavorited = (id) => {
     return props.user_favorites.includes(id);

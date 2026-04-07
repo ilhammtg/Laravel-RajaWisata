@@ -42,4 +42,9 @@ class Hotel extends Model
     {
         return $this->morphMany(Review::class, 'reviewable');
     }
+
+    public function destinations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Destination::class, 'destination_hotel')->withTimestamps();
+    }
 }

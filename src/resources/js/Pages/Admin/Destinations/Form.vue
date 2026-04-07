@@ -163,6 +163,50 @@
            </div>
         </section>
 
+        <!-- Nearby Locations Integration Card -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+           <div class="px-8 py-6 border-b border-gray-100 bg-gray-50/50">
+             <h3 class="font-bold text-gray-900 flex items-center gap-2">
+               <span class="p-2 bg-blue-50 rounded-lg text-blue-600">🏢</span> Lokasi & Fasilitas Terdekat
+             </h3>
+           </div>
+           <div class="p-8 space-y-10">
+              <!-- Nearby Hotels -->
+              <div class="space-y-4">
+                 <div class="flex items-center justify-between">
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider text-[10px]">Penginapan Terdekat</label>
+                    <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">{{ form.hotel_ids.length }} Terpilih</span>
+                 </div>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-48 overflow-y-auto p-2 border border-gray-50 rounded-2xl custom-scrollbar">
+                    <label v-for="hotel in hotels" :key="hotel.id" class="relative group cursor-pointer">
+                       <input type="checkbox" v-model="form.hotel_ids" :value="hotel.id" class="sr-only">
+                       <div :class="[form.hotel_ids.includes(hotel.id) ? 'bg-blue-500 border-blue-500 text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-blue-200', 'px-3 py-2 rounded-xl border-2 transition-all text-[11px] font-bold text-center h-full flex items-center justify-center']">
+                          {{ hotel.name }}
+                       </div>
+                    </label>
+                    <div v-if="hotels.length === 0" class="col-span-full py-4 text-center text-xs text-gray-400 italic">Belum ada data penginapan aktif.</div>
+                 </div>
+              </div>
+
+              <!-- Nearby Culinaries -->
+              <div class="space-y-4">
+                 <div class="flex items-center justify-between">
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider text-[10px]">Kuliner Terdekat</label>
+                    <span class="text-[10px] font-black text-orange-500 uppercase tracking-widest">{{ form.culinary_ids.length }} Terpilih</span>
+                 </div>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-48 overflow-y-auto p-2 border border-gray-50 rounded-2xl custom-scrollbar">
+                    <label v-for="culinary in culinaries" :key="culinary.id" class="relative group cursor-pointer">
+                       <input type="checkbox" v-model="form.culinary_ids" :value="culinary.id" class="sr-only">
+                       <div :class="[form.culinary_ids.includes(culinary.id) ? 'bg-orange-500 border-orange-500 text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-orange-200', 'px-3 py-2 rounded-xl border-2 transition-all text-[11px] font-bold text-center h-full flex items-center justify-center']">
+                          {{ culinary.name }}
+                       </div>
+                    </label>
+                    <div v-if="culinaries.length === 0" class="col-span-full py-4 text-center text-xs text-gray-400 italic">Belum ada data kuliner aktif.</div>
+                 </div>
+              </div>
+           </div>
+        </section>
+
         <!-- Configuration Card -->
         <section class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
            <div class="px-8 py-6 border-b border-gray-100 bg-gray-50/50">
@@ -228,6 +272,8 @@ import { Link, Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
   destination: Object,
+  hotels: Array,
+  culinaries: Array,
 });
 
 const form = useForm({
@@ -246,6 +292,8 @@ const form = useForm({
   is_active: props.destination?.is_active ?? true,
   is_hero: props.destination?.is_hero ?? false,
   order: props.destination?.order ?? 0,
+  hotel_ids: props.destination?.hotels?.map(h => h.id) ?? [],
+  culinary_ids: props.destination?.culinaries?.map(c => c.id) ?? [],
 });
 
 const handleGalleryFiles = (e) => {

@@ -293,7 +293,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   culinaries: Array,
@@ -310,6 +310,18 @@ const page = usePage();
 const showAll = ref(false);
 const selectedCulinary = ref(null);
 const activeImg = ref(null);
+
+onMounted(() => {
+    window.addEventListener('open-culinary-detail', handleExternalOpen);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('open-culinary-detail', handleExternalOpen);
+});
+
+const handleExternalOpen = (e) => {
+    selectedCulinary.value = e.detail;
+};
 
 const reviewForm = useForm({
     reviewable_id: null,

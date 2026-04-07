@@ -18,8 +18,8 @@ class LandingPageController extends Controller
         // Cache data for 60 minutes to optimize performance
         $data = Cache::remember('landing_page_data', 3600, function () {
             return [
-                'hero_destinations' => Destination::with(['reviews' => function($q) { $q->where('is_approved', true)->with('user'); }])->where('is_active', true)->where('is_hero', true)->orderBy('order')->get(),
-                'destinations' => Destination::with(['reviews' => function($q) { $q->where('is_approved', true)->with('user'); }])->where('is_active', true)->orderBy('order')->get(),
+                'hero_destinations' => Destination::with(['hotels', 'culinaries', 'reviews' => function($q) { $q->where('is_approved', true)->with('user'); }])->where('is_active', true)->where('is_hero', true)->orderBy('order')->get(),
+                'destinations' => Destination::with(['hotels', 'culinaries', 'reviews' => function($q) { $q->where('is_approved', true)->with('user'); }])->where('is_active', true)->orderBy('order')->get(),
                 'hotels' => Hotel::with(['reviews' => function($q) { $q->where('is_approved', true)->with('user'); }])->where('is_active', true)->orderBy('order')->get(),
                 'culinaries' => Culinary::with(['reviews' => function($q) { $q->where('is_approved', true)->with('user'); }])->where('is_active', true)->orderBy('order')->get(),
                 'events' => Event::where('is_active', true)->orderBy('order')->get(),

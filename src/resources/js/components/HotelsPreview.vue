@@ -269,7 +269,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   hotels: Array,
@@ -286,6 +286,18 @@ const page = usePage();
 const showAll = ref(false);
 const selectedHotel = ref(null);
 const activeImg = ref(null);
+
+onMounted(() => {
+    window.addEventListener('open-hotel-detail', handleExternalOpen);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('open-hotel-detail', handleExternalOpen);
+});
+
+const handleExternalOpen = (e) => {
+    selectedHotel.value = e.detail;
+};
 
 const reviewForm = useForm({
     reviewable_id: null,
